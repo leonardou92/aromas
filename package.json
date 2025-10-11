@@ -1,0 +1,26 @@
+{
+  "name": "aromas",
+  "version": "1.0.0",
+  "description": "Sistema de gestión de perfumes - Node.js",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "seed": "node src/initNeonDB.js",
+    "test": "jest",
+    "dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.8.7",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
+  }
+}
