@@ -73,8 +73,13 @@ async function initDB() {
     await sql`CREATE TABLE IF NOT EXISTS almacenes (
       id SERIAL PRIMARY KEY,
       nombre VARCHAR(100),
-      tipo VARCHAR(30)
+      tipo VARCHAR(30),
+      ubicacion VARCHAR(200),
+      responsable VARCHAR(100)
     );`;
+    // Asegurar columnas en caso de migracion previa
+    try { await sql`ALTER TABLE almacenes ADD COLUMN ubicacion VARCHAR(200);`; } catch(e) {}
+    try { await sql`ALTER TABLE almacenes ADD COLUMN responsable VARCHAR(100);`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS formulas (
       id SERIAL PRIMARY KEY,
       producto_terminado_id INT

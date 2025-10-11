@@ -86,6 +86,23 @@
       "get": { "summary": "Listar pagos", "responses": { "200": { "description": "Lista de pagos" } } },
       "post": { "summary": "Registrar pago", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Pago" } } } }, "responses": { "201": { "description": "Pago registrado" } } }
     }
+    ,
+    "/almacenes": {
+      "get": {
+        "summary": "Listar almacenes",
+        "responses": { "200": { "description": "Lista de almacenes" } }
+      },
+      "post": {
+        "summary": "Crear almacen",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Almacen" } } } },
+        "responses": { "201": { "description": "Almacen creado" } }
+      }
+    },
+    "/almacenes/{id}": {
+      "get": { "summary": "Obtener almacen por ID", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Almacen" }, "404": { "description": "No encontrado" } } },
+      "put": { "summary": "Actualizar almacen", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Almacen" } } } }, "responses": { "200": { "description": "Almacen actualizado" }, "404": { "description": "No encontrado" } } },
+      "delete": { "summary": "Eliminar almacen", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Almacen eliminado" }, "404": { "description": "No encontrado" } } }
+    }
   },
   "components": {
     "securitySchemes": {
@@ -144,6 +161,17 @@
           "banco_id": { "type": "integer" },
           "monto": { "type": "number" }
         }
+      }
+      ,
+      "Almacen": {
+        "type": "object",
+        "properties": {
+          "nombre": { "type": "string" },
+          "tipo": { "type": "string", "enum": ["MateriaPrima", "Venta"] },
+          "ubicacion": { "type": "string" },
+          "responsable": { "type": "string" }
+        },
+        "required": ["nombre","tipo"]
       }
     }
   },
