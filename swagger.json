@@ -1,0 +1,153 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Aromas",
+    "version": "1.0.0",
+    "description": "API REST para gestión de perfumes, inventario, clientes, bancos y pagos."
+  },
+  "servers": [
+    { "url": "http://localhost:3000/api" }
+  ],
+  "paths": {
+    "/productos": {
+      "get": {
+        "summary": "Listar productos",
+        "responses": { "200": { "description": "Lista de productos" } }
+      },
+      "post": {
+        "summary": "Crear producto",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Producto" } } } },
+        "responses": { "201": { "description": "Producto creado" } }
+      }
+    },
+      "/auth/login": {
+        "post": {
+          "summary": "Login de usuario",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": { "type": "string" },
+                    "password": { "type": "string" }
+                  },
+                  "required": ["email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Token JWT",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "token": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "401": { "description": "Credenciales incorrectas" }
+          }
+        }
+      },
+    "/productos/{id}": {
+      "get": { "summary": "Obtener producto por ID", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Producto" }, "404": { "description": "No encontrado" } } },
+      "put": { "summary": "Actualizar producto", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Producto" } } } }, "responses": { "200": { "description": "Producto actualizado" }, "404": { "description": "No encontrado" } } },
+      "delete": { "summary": "Eliminar producto", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Producto eliminado" }, "404": { "description": "No encontrado" } } }
+    },
+    "/proveedores": {
+      "get": { "summary": "Listar proveedores", "responses": { "200": { "description": "Lista de proveedores" } } },
+      "post": { "summary": "Crear proveedor", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Proveedor" } } } }, "responses": { "201": { "description": "Proveedor creado" } } }
+    },
+    "/proveedores/{id}": {
+      "get": { "summary": "Obtener proveedor por ID", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Proveedor" }, "404": { "description": "No encontrado" } } },
+      "put": { "summary": "Actualizar proveedor", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Proveedor" } } } }, "responses": { "200": { "description": "Proveedor actualizado" }, "404": { "description": "No encontrado" } } },
+      "delete": { "summary": "Eliminar proveedor", "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }], "responses": { "200": { "description": "Proveedor eliminado" }, "404": { "description": "No encontrado" } } }
+    },
+    "/bancos": {
+      "get": { "summary": "Listar bancos", "responses": { "200": { "description": "Lista de bancos" } } },
+      "post": { "summary": "Crear banco", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Banco" } } } }, "responses": { "201": { "description": "Banco creado" } } }
+    },
+    "/formas-pago": {
+      "get": { "summary": "Listar formas de pago", "responses": { "200": { "description": "Lista de formas de pago" } } },
+      "post": { "summary": "Crear forma de pago", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FormaPago" } } } }, "responses": { "201": { "description": "Forma de pago creada" } } }
+    },
+    "/cliente-bancos": {
+      "get": { "summary": "Listar bancos de clientes", "responses": { "200": { "description": "Lista de bancos de clientes" } } },
+      "post": { "summary": "Asociar banco a cliente", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ClienteBanco" } } } }, "responses": { "201": { "description": "Banco asociado" } } }
+    },
+    "/pagos": {
+      "get": { "summary": "Listar pagos", "responses": { "200": { "description": "Lista de pagos" } } },
+      "post": { "summary": "Registrar pago", "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Pago" } } } }, "responses": { "201": { "description": "Pago registrado" } } }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Producto": {
+        "type": "object",
+        "properties": {
+          "nombre": { "type": "string" },
+          "tipo": { "type": "string", "enum": ["MateriaPrima", "ProductoTerminado"] },
+          "unidad": { "type": "string" },
+          "stock": { "type": "integer" },
+          "costo": { "type": "number" },
+          "precio_venta": { "type": "number" },
+          "proveedor_id": { "type": "integer" }
+        }
+      },
+      "Proveedor": {
+        "type": "object",
+        "properties": {
+          "nombre": { "type": "string" },
+          "telefono": { "type": "string" },
+          "email": { "type": "string" }
+        }
+      },
+      "Banco": {
+        "type": "object",
+        "properties": {
+          "nombre": { "type": "string" }
+        }
+      },
+      "FormaPago": {
+        "type": "object",
+        "properties": {
+          "nombre": { "type": "string" }
+        }
+      },
+      "ClienteBanco": {
+        "type": "object",
+        "properties": {
+          "cliente_id": { "type": "integer" },
+          "banco_id": { "type": "integer" },
+          "cuenta_bancaria": { "type": "string" }
+        }
+      },
+      "Pago": {
+        "type": "object",
+        "properties": {
+          "pedido_venta_id": { "type": "integer" },
+          "forma_pago_id": { "type": "integer" },
+          "banco_id": { "type": "integer" },
+          "monto": { "type": "number" }
+        }
+      }
+    }
+  },
+  "security": [
+    { "bearerAuth": [] }
+  ]
+}
