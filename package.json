@@ -4,7 +4,7 @@
   "description": "Sistema de gestión de perfumes - Node.js",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
+  "start": "node src/server.js",
     "seed": "node src/initNeonDB.js",
     "test": "jest",
     "dev": "nodemon src/server.js"
