@@ -13,5 +13,5 @@ COPY . .
 ENV NODE_ENV=production
 EXPOSE 3000
 
-# Use the start script defined in package.json
-CMD ["npm", "start"]
+# Start the app using absolute path to avoid relative path issues in some runtimes
+CMD ["node", "/app/src/app.js"]
