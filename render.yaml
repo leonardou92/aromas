@@ -4,5 +4,5 @@ services:
     env: node
     branch: master
     buildCommand: npm ci
-    startCommand: node /app/src/server.js
+  startCommand: node server.js
     autoDeploy: true

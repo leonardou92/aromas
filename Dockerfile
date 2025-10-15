@@ -10,15 +10,10 @@ COPY package.json package-lock.json* ./
 RUN npm ci --production || npm install --production
 
 # Copy application source
-COPY src ./src
 COPY . .
-
-# Debug: list files to ensure src was copied
-RUN echo "--- /app contents ---" && ls -la /app || true
-RUN echo "--- /app/src contents ---" && ls -la /app/src || true
 
 ENV NODE_ENV=production
 EXPOSE 3000
 
-# Start the app using absolute path to avoid relative path issues in some runtimes
-CMD ["node", "/app/src/server.js"]
+# Start the app using the server at repository root (present in /app)
+CMD ["node", "server.js"]
