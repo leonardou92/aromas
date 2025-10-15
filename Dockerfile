@@ -1,6 +1,5 @@
 FROM node:20-alpine
 
-WORKDIR /app
 
 # Copy package manifest first for cached installs
 COPY package.json package-lock.json* ./
