@@ -4,6 +4,42 @@ const jwt = require('jsonwebtoken');
 const app = express();
 app.use(express.json());
 
+// Human-friendly colorized console logger
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    let userId = '-';
+    try {
+      const auth = req.headers['authorization'];
+      if (auth && auth.startsWith('Bearer ')) {
+        const token = auth.split(' ')[1];
+        const decoded = jwt.decode(token) || {};
+        userId = decoded.id || decoded.userId || decoded.sub || '-';
+      }
+    } catch (e) {}
+
+    const ip = (req.headers['x-forwarded-for'] || req.ip || (req.connection && req.connection.remoteAddress) || '-').toString();
+    const time = new Date().toISOString();
+    const method = req.method;
+    const url = req.originalUrl || req.url;
+    const status = res.statusCode;
+
+    const reset = '\u001b[0m';
+    const red = '\u001b[31m';
+    const yellow = '\u001b[33m';
+    const green = '\u001b[32m';
+    let color = green;
+    if (status >= 500) color = red;
+    else if (status >= 400) color = red;
+    else if (status >= 300) color = yellow;
+
+    const line = `${time} | ${method} ${url} | ${color}${status}${reset} | ${duration}ms | ip=${ip} | user=${userId}`;
+    console.log(line);
+  });
+  next();
+});
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
