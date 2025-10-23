@@ -56,6 +56,7 @@ Aromas/
 - Endpoints principales:
   - Autenticación: `POST /api/auth/login`, `POST /api/auth/register`
   - Productos: `GET/POST /api/productos`
+   - Catálogo público de productos: `GET /api/productos/catalogo` (no requiere token)
   - Proveedores: `GET /api/proveedores`
   - Almacenes: `GET /api/almacenes`
   - Fórmulas: `GET /api/formulas`

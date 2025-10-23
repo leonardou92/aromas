@@ -65,6 +65,9 @@ function authMiddleware(req, res, next) {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// Catálogo público de productos (no requiere token)
+app.use('/api/productos/catalogo', require('./routes/productosCatalogo'));
+
 // Rutas protegidas
 app.use('/api/productos', authMiddleware, require('./routes/productos'));
 app.use('/api/proveedores', authMiddleware, require('./routes/proveedores'));
