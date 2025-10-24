@@ -30,10 +30,11 @@ router.post('/', async (req, res) => {
   const error = validarPedido(req.body);
   if (error) return res.status(400).json({ error });
   try {
-    const { cliente_id, productos, estado } = req.body;
+    const { cliente_id, productos, estado, nombre_cliente, telefono, cedula } = req.body;
+    // Insertar incluyendo campos opcionales nombre_cliente, telefono y cedula (si están presentes)
     const pedido = await sql`
-      INSERT INTO pedidos_venta (cliente_id, estado, fecha)
-      VALUES (${cliente_id}, ${estado}, NOW()) RETURNING *
+      INSERT INTO pedidos_venta (cliente_id, nombre_cliente, telefono, cedula, estado, fecha)
+      VALUES (${cliente_id || null}, ${nombre_cliente || null}, ${telefono || null}, ${cedula || null}, ${estado}, NOW()) RETURNING *
     `;
     for (const p of productos) {
       await sql`

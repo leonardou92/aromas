@@ -126,6 +126,12 @@ async function initDB() {
       estado VARCHAR(30),
       fecha TIMESTAMP
     );`;
+    // Asegurar columnas adicionales para pedidos_venta (migración segura)
+    try { await sql`ALTER TABLE pedidos_venta ADD COLUMN nombre_cliente TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE pedidos_venta ADD COLUMN telefono TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE pedidos_venta ADD COLUMN cedula TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE pedidos_venta ADD COLUMN origen_ip TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE pedidos_venta ADD COLUMN user_agent TEXT;`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS pedido_venta_productos (
       id SERIAL PRIMARY KEY,
       pedido_venta_id INT,

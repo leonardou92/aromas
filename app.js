@@ -65,6 +65,10 @@ function authMiddleware(req, res, next) {
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// Permitir creación pública de pedidos de venta sin token (POST)
+// Montamos antes de las rutas protegidas para que solo el POST quede público
+app.use('/api/pedidos-venta', require('./routes/pedidosVentaPublic'));
+
 // Catálogo público de productos (no requiere token)
 app.use('/api/productos/catalogo', require('./routes/productosCatalogo'));
 
