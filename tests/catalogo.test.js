@@ -6,6 +6,12 @@ describe('Catálogo público de productos', () => {
     const res = await request(app).get('/api/productos/catalogo');
     expect([200, 204]).toContain(res.statusCode);
     // Si hay contenido esperado que sea array
-    if (res.body) expect(Array.isArray(res.body)).toBe(true);
+    if (res.body) {
+      expect(Array.isArray(res.body)).toBe(true);
+      if (res.body.length > 0) {
+        // el catálogo ahora incluye image_url por producto (puede ser null)
+        expect(res.body[0]).toHaveProperty('image_url');
+      }
+    }
   });
 });

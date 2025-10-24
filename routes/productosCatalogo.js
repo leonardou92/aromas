@@ -11,35 +11,35 @@ const sql = neon(process.env.DATABASE_URL);
 router.get('/', async (req, res) => {
   try {
     const { q, includeOutOfStock, limit } = req.query;
-    // Construir consultas simples por ramas para evitar concatenación compleja de templates
-    const cols = 'id, nombre, tipo, unidad, stock, precio_venta';
-    let result;
+    const cols = 'id, nombre, tipo, unidad, stock, precio_venta, image_url';
     const hasQ = q && q.toString().trim() !== '';
     const includeOut = includeOutOfStock === 'true';
     const lim = limit && !isNaN(Number(limit)) ? Number(limit) : null;
+    let result = [];
 
-    if (hasQ) {
-      const pattern = `%${q}%`;
-      if (!includeOut) {
-        // Algunas instalaciones pueden fallar al inyectar operadores en templates; obtener los
-        // resultados sin el filtro y aplicar el filtro en JS para evitar errores de sintaxis
-        if (lim) result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta FROM productos WHERE nombre ILIKE ${pattern} LIMIT ${lim}`;
-        else result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta FROM productos WHERE nombre ILIKE ${pattern}`;
-        result = (result || []).filter(r => Number(r.stock) > 0);
+    const pattern = hasQ ? `%${q}%` : null;
+
+    // Si no incluimos agotados, traemos y filtramos en JS (evita problemas de sintaxis en algunos clientes SQL)
+    if (!includeOut) {
+      if (hasQ) {
+  if (lim) result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta, image_url FROM productos WHERE nombre ILIKE ${pattern} LIMIT ${lim}`;
+  else result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta, image_url FROM productos WHERE nombre ILIKE ${pattern}`;
       } else {
-  if (lim) result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta FROM productos WHERE nombre ILIKE ${pattern} LIMIT ${lim}`;
-  else result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta FROM productos WHERE nombre ILIKE ${pattern}`;
+  if (lim) result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta, image_url FROM productos LIMIT ${lim}`;
+  else result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta, image_url FROM productos`;
       }
+      result = (result || []).filter(r => Number(r.stock) > 0);
     } else {
-      if (!includeOut) {
-        if (lim) result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta FROM productos LIMIT ${lim}`;
-        else result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta FROM productos`;
-        result = (result || []).filter(r => Number(r.stock) > 0);
+      // incluir agotados: directamente en SQL
+      if (hasQ) {
+  if (lim) result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta, image_url FROM productos WHERE nombre ILIKE ${pattern} LIMIT ${lim}`;
+  else result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta, image_url FROM productos WHERE nombre ILIKE ${pattern}`;
       } else {
-  if (lim) result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta FROM productos LIMIT ${lim}`;
-  else result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta FROM productos`;
+  if (lim) result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta, image_url FROM productos LIMIT ${lim}`;
+  else result = await sql`SELECT id, nombre, tipo, unidad, stock, precio_venta, image_url FROM productos`;
       }
     }
+
     res.json(result);
   } catch (err) {
     console.error('Error en /api/productos/catalogo', err);
